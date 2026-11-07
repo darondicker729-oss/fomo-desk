@@ -1,0 +1,1 @@
+self.addEventListener('push',event=>{const d=event.data.json();event.waitUntil(self.registration.showNotification(d.title,{body:d.body,icon:'/icons/apple-touch-icon.png',data:{url:d.url}}))});self.addEventListener('notificationclick',event=>{event.notification.close();event.waitUntil(clients.openWindow(event.notification.data.url))});
