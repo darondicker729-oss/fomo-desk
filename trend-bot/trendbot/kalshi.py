@@ -199,7 +199,7 @@ def report(df: pd.DataFrame, label: str):
     b1, b2 = bets(df, 1), bets(df, 2)
     m1, m2 = b1.pnl_per_dollar.mean(), b2.pnl_per_dollar.mean()
     lo, hi = bootstrap_ci(b1) if len(b1) else (0, 0)
-    ct = pd.to_datetime(b1.close_time, utc=True)
+    ct = pd.to_datetime(b1.close_time, utc=True, format="ISO8601")
     mid = ct.min() + (ct.max() - ct.min()) / 2
     h1, h2 = b1[ct < mid].pnl_per_dollar.mean(), b1[ct >= mid].pnl_per_dollar.mean()
     by_series = b1.groupby("series").pnl_per_dollar.agg(["count", "mean"]).sort_values("count", ascending=False)
@@ -208,7 +208,7 @@ def report(df: pd.DataFrame, label: str):
 
 def research(holdout: bool = False) -> bool:
     df = pd.read_csv(OUT / "markets.csv")
-    ct = pd.to_datetime(df.close_time, utc=True)
+    ct = pd.to_datetime(df.close_time, utc=True, format="ISO8601")
     if holdout:
         log = OUT.parent.parent / "holdout_log.md"
         if log.exists() and "kalshi-favourite" in log.read_text():

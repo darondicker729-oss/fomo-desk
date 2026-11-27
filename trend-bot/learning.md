@@ -149,3 +149,12 @@ KXNHLGAME, KXNCAAFGAME, KXNCAAMBGAME, KXHIGHNY, KXHIGHCHI, KXHIGHMIA, KXHIGHLAX,
 KXFED, KXFEDDECISION, KXCPI, KXCPIYOY, KXPAYROLLS, KXGDP, KXBTCD, KXINX, KXTSAW,
 KXRT), up to 300 random eligible markets per series from up to 20 pages of
 listings, closing from 2025-06-01. All other rules unchanged.
+
+**Collection stopped early at the user's request, before any results were seen:** 17
+of 20 series, 3,924 markets (KXINX, KXTSAW, KXRT not collected).
+
+**Result: FAILED 4 of 5 checks.** 1,812 favourite bets across 16 series: -0.93% per
+$1 after costs (95% interval -2.1% to +0.2%), -2.2% at 2x costs, negative in both
+halves. The bias exists at the extremes (contracts at 1-5c won 0.1% of the time vs
+1.2% implied), but favourites cost 97.6c with fees and slippage and won 96.8% of the
+time. Kalshi's fee and the spread take the edge. Graveyard. Holdout not used.
