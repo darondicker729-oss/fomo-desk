@@ -71,3 +71,22 @@ payment. Who loses to it: leveraged speculators paying to hold their bets.
 did in 2022), funding schedule changes, and borrowing or transfer delays.
 
 **Kill criterion:** if it fails the research checks, graveyard. No tuning.
+
+**Result (test `5cef38f8680c`): FAILED 1 of 9, the best result so far.** +6.7% a year
+after costs, max drawdown -1.7%, beats 100% of random runs, 74% of walk-forward
+quarters positive. Failed only the deflated Sharpe check (0.82 vs 0.90).
+
+**Why it failed the luck check:** returns have very fat tails (excess kurtosis 32,
+from forced margin closes and funding spikes), and the trial pool mixes trend and
+carry variants. Counting only the 15 carry variants gives 1.00. The pre-registered
+rule counts all trials, so the verdict stands: FAIL.
+
+**The bigger problem, by year (real costs):** 2020 +12.5%, 2021 +21.2%, 2022 -1.1%,
+2023 +3.1%, 2024 +5.0%, 2025 +0.4%. Nearly all the profit came from the 2020-21
+mania. Since 2022 it has averaged about +1.9% a year, below US Treasury bill yields,
+with exchange risk on top. At 2x costs, 2022 and 2025 lose money. US venues
+(Coinbase, CME) likely pay less funding than Binance, so it would be worse there.
+
+**Lesson:** carry is a real edge, but it pays mainly in speculative manias, and
+lately it hasn't beaten a risk-free savings rate. Revisit only if funding stays
+high for months (the signal itself would show this), and test on US venue data.

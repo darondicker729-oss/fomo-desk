@@ -7,3 +7,4 @@
 
 No rematch within a month unless the market regime changes.
 | 2026-11-27 | `91045f54338d` | Vol-sized BTC + ETH, always held | Research | Closest yet (Sharpe 1.10, DD -9%) but failed trade count, deflated Sharpe 0.88, BTC ret/DD, random entries |
+| 2026-11-27 | `5cef38f8680c` | Funding carry, 20 coins, Binance data | Research | Passed 8/9 but failed deflated Sharpe (0.82); profits came almost entirely from 2020-21, about +1.9%/yr since 2022, below T-bills. Revisit if funding stays high |
