@@ -1,0 +1,61 @@
+# Copy to config.yaml and edit. config.yaml is git-ignored.
+
+mode: paper                 # paper | live. Live also needs env TRENDBOT_GO_LIVE=yes
+
+# Exchange you trade on (a ccxt id: kraken, coinbase, bitstamp, binance, okx, ...).
+# It must be legal where you live and its API must support stop-limit orders.
+exchange: kraken
+quote: USD                  # quote currency on that exchange
+
+# Where research history comes from. "binance_public" uses Binance's free public
+# market-data mirror (no account needed, years of daily data). Or any ccxt id.
+data_source: binance_public
+
+# Fixed list chosen at research start. Use the coins that were large and liquid
+# at research_start, not today's winners, to limit survivorship bias.
+# Live/paper trading uses BASE/<quote> on `exchange` (e.g. BTC/USDT -> BTC/USD on Kraken),
+# so drop any coin your exchange doesn't list before you start research.
+universe: [BTC/USDT, ETH/USDT]
+benchmark: BTC/USDT
+
+research_start: "2019-01-01"
+holdout_start: "2025-11-27"   # last 12 months: locked, tested once per strategy
+
+costs:
+  fee_per_side: 0.0026        # use your real fee tier (Kraken base taker shown)
+  slippage_per_side: 0.0005
+  delist_haircut: 0.3         # ASSUMPTION: loss when a held coin stops trading
+
+strategy:
+  sma: 100
+  vol_lookback: 30
+  target_vol: 0.15            # annual portfolio volatility target
+  max_weight: 0.25
+  max_gross: 1.0              # 1.0 = no leverage
+  top_k: null
+  signal: always
+  mom_lookback: 90
+  rebalance_weekday: 0        # Monday
+  min_trade: 0.02
+  stop_mult: 7.0
+  risk_per_trade: 0.01
+
+# Small grid for walk-forward. Every variant is logged to trials.csv forever.
+grid:
+  target_vol: [0.10, 0.15, 0.20]
+
+gates:
+  min_trades: 150
+  walk_forward_min_positive: 0.6
+  min_deflated_sharpe: 0.90
+  random_percentile: 90
+
+risk:
+  daily_loss_limit: 0.03
+  kill_switch_drawdown: 0.20
+
+execution:
+  max_slippage: 0.003         # limit-price cap on rebalance orders
+  stop_limit_gap: 0.01        # stop-limit sell price this far below the trigger
+
+paper_start_cash: 10000

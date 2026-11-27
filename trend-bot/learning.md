@@ -23,3 +23,28 @@ switch), buy-and-hold BTC on return/drawdown, and random entries (beats only 46%
 the edge here comes from volatility sizing and risk control, not from the
 trend signal. The sma=50 grid rows look better, but choosing one now would be
 picking the best of 28 tries on the same data. Kill criterion met: stop tuning.
+
+## 2026-11-27: new hypothesis 2, volatility-sized BTC + ETH, always held
+
+**Why:** Runs 1-2 showed random entries with the same sizing did as well as the
+trend signal, so the value seemed to come from volatility sizing and risk
+control. Test that part alone: hold BTC and ETH all the time, sized so the
+portfolio targets a fixed volatility, with 7-sigma emergency stops. Who loses
+to it: holders who keep full size through high-volatility crashes.
+
+**Settings fixed before running:** config-volhold.yaml, target_vol 0.15, grid
+target_vol [0.10, 0.15, 0.20]. Same 9 checks, same thresholds.
+
+**Kill criterion:** if it fails the research checks, it goes to the graveyard. No tuning.
+
+**Result (test `91045f54338d`): FAILED 4 of 9, the closest so far.** +6.3% a year,
+Sharpe 1.10, max drawdown -9.3%, Monte Carlo worst-5% -15%. Passed costs, 2x
+costs, walk-forward (65%), neighbours and Monte Carlo. Failed: too few trades
+(66, because it rarely trades), deflated Sharpe 0.88 vs 0.90, BTC return/drawdown
+(0.68 vs 0.76), random entries (beats 82%, needs 90%).
+
+**Lesson:** it only reached 5.7% volatility, not the 15% target, because the 1%
+risk-per-trade rule with 7-sigma stops capped each coin at about 4%. Its
+risk-adjusted result is about the same as just holding BTC, with a far smaller
+drawdown. That's a risk-controlled way to hold crypto, not an edge. Per the kill
+criterion: graveyard, no tuning.

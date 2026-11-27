@@ -6,3 +6,4 @@
 | 2026-11-27 | `f8b36a768b71` | Same, 7-sigma emergency stops | Research | Better (+11.3%/yr, Sharpe 0.77) but no better than random entries; failed walk-forward, luck, drawdown, BTC baseline |
 
 No rematch within a month unless the market regime changes.
+| 2026-11-27 | `91045f54338d` | Vol-sized BTC + ETH, always held | Research | Closest yet (Sharpe 1.10, DD -9%) but failed trade count, deflated Sharpe 0.88, BTC ret/DD, random entries |

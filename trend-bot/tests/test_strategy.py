@@ -122,3 +122,10 @@ def test_drop_unclosed():
 def test_unknown_setting_rejected():
     with pytest.raises(ValueError):
         Params.from_dict({"smaa": 10})
+
+
+def test_always_signal_holds_everything_once_vol_known():
+    from trendbot.strategy import trend_signal
+    close = to_panel(make_frames(n_days=200))["close"]
+    sig = trend_signal(close, Params(signal="always", vol_lookback=20))
+    assert not sig.iloc[:19].any().any() and sig.iloc[25:].all().all()

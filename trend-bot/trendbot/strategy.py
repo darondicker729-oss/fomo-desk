@@ -35,6 +35,7 @@ class Params:
     min_trade: float = 0.02       # ignore resizes smaller than this weight
     stop_mult: float = 3.0        # stop distance in daily standard deviations
     risk_per_trade: float = 0.01  # max equity lost if a stop is hit
+    signal: str = "trend"         # "trend" (above SMA) or "always" (hold all, sized by vol)
 
     @classmethod
     def from_dict(cls, d: dict | None) -> "Params":
@@ -59,6 +60,10 @@ def daily_vol(close: pd.DataFrame, p: Params) -> pd.DataFrame:
 
 
 def trend_signal(close: pd.DataFrame, p: Params) -> pd.DataFrame:
+    if p.signal == "always":
+        return close.notna() & close.rolling(p.vol_lookback, min_periods=p.vol_lookback).count().ge(p.vol_lookback)
+    if p.signal != "trend":
+        raise ValueError(f"unknown signal {p.signal!r}")
     sma = close.rolling(p.sma, min_periods=p.sma).mean()
     sig = (close > sma) & sma.notna() & close.notna()
     if p.top_k:
