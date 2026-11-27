@@ -38,7 +38,7 @@ strategy:
   mom_lookback: 90
   rebalance_weekday: 0        # Monday
   min_trade: 0.02
-  stop_mult: 3.0
+  stop_mult: 7.0
   risk_per_trade: 0.01
 
 # Small grid for walk-forward. Every variant is logged to trials.csv forever.
