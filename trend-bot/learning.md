@@ -90,3 +90,62 @@ with exchange risk on top. At 2x costs, 2022 and 2025 lose money. US venues
 **Lesson:** carry is a real edge, but it pays mainly in speculative manias, and
 lately it hasn't beaten a risk-free savings rate. Revisit only if funding stays
 high for months (the signal itself would show this), and test on US venue data.
+
+## 2026-11-27: new hypothesis 4, selling cash-secured S&P 500 puts
+
+**Why:** Options buyers pay extra for crash insurance (the "volatility risk
+premium"), so sellers of puts tend to be paid more than the losses they cover.
+Who loses to it: hedgers buying protection. Documented in academic and Cboe research.
+
+**Test (no settings chosen, so no tuning possible):** the Cboe PUT index, which sells
+a one-month at-the-money S&P 500 put each month, backed by Treasury bills. Daily data
+from 2007. Retail cost drag assumed 0.5% a year (bid-ask and commissions), and 1%
+for the 2x test. ASSUMPTION, not data. Research period: 2007-01-01 to 2025-11-26.
+Holdout: 2025-11-27 onwards, looked at once.
+
+**Pass if all hold in the research period:**
+1. Beats T-bills (cash) after costs, and at 2x costs.
+2. Sharpe ratio at least as high as the S&P 500 (price index; true total return is
+   higher by the dividend yield, noted in the result).
+3. Smaller max drawdown than the S&P 500.
+4. The last 5 research years (2021-2025) still beat T-bills after costs.
+Then the holdout once: positive and ahead of T-bills after costs.
+
+**Result: FAILED 1 of 4 research checks (no holdout run).** 2007-2025 after costs:
++6.4% a year, vol 14%, max drawdown -37% (S&P price index: +8.7%, vol 20%, max
+drawdown -57%, before ~2% dividends). Beat cash in every test and 72% of months
+were positive, but its Sharpe (0.41) was below the S&P's (0.45), even before the
+S&P's dividends. Crash months were as bad as the S&P: Oct 2008 -17.7%, Mar 2020 -13.5%.
+
+**Lesson:** selling puts behaves like owning about 70% of the S&P 500. The steady
+"income" is stock-market risk paid out monthly. An index fund did as well or better
+for the risk, with less work and simpler taxes. Graveyard.
+
+## 2026-11-27: new hypothesis 5, Kalshi favourite-longshot bias
+
+**Why:** In betting markets, long shots tend to be overpriced and favourites
+underpriced, because people overpay for lottery-like payoffs. Who loses to it:
+bettors buying cheap "yes" tickets on unlikely outcomes.
+
+**Rules fixed before collecting data:**
+- Sample: settled binary Kalshi markets (no multi-leg parlays), volume of at least
+  1,000 contracts, sampled evenly by month.
+- Price: last trade at least 3 hours before the market's close. Markets with no
+  such trade are skipped.
+- Bet: buy the favourite side (yes or no) when it is priced 80c or more.
+- Costs: Kalshi taker fee 0.07 x P x (1-P) per contract (assumes 100-contract
+  orders) plus 1c slippage. 2x test doubles both. ASSUMPTION on slippage.
+- Research: markets closing 2025-06-01 to 2026-08-26. Holdout: closing
+  2026-08-27 onwards, looked at once.
+
+**Pass if:** at least 300 bets; average profit per $1 staked above 0 after costs,
+with the 95% bootstrap interval (resampling whole events) above 0; still positive at
+2x costs; positive in both halves of the research period. Then holdout once.
+
+**Method change before seeing any results:** Kalshi's historical endpoint ignores
+date filters, so sampling by month isn't possible. Instead: a fixed list of 20
+long-running series chosen across categories (KXNFLGAME, KXNBAGAME, KXMLBGAME,
+KXNHLGAME, KXNCAAFGAME, KXNCAAMBGAME, KXHIGHNY, KXHIGHCHI, KXHIGHMIA, KXHIGHLAX,
+KXFED, KXFEDDECISION, KXCPI, KXCPIYOY, KXPAYROLLS, KXGDP, KXBTCD, KXINX, KXTSAW,
+KXRT), up to 300 random eligible markets per series from up to 20 pages of
+listings, closing from 2025-06-01. All other rules unchanged.
