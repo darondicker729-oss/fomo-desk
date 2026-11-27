@@ -92,17 +92,27 @@ def download(cfg: Config) -> None:
     start = max(cfg.research_start, pd.Timestamp("2019-09-01"))
     last_full = pd.Timestamp.now(tz="UTC").tz_localize(None).normalize().replace(day=1) - pd.Timedelta(days=1)
     log = []
+    from concurrent.futures import ThreadPoolExecutor
+
+    months = [f"{m.year}-{m.month:02d}" for m in _month_range(start, last_full)]
     for sym in cfg.universe:
         pair = sym.replace("/", "")
+        fpath = cfg.workdir / "data" / "carry" / "funding" / f"{_fname(sym)}.csv"
+        kpath = cfg.workdir / "data" / "carry" / "perp" / f"{_fname(sym)}.csv"
+        if fpath.exists() and kpath.exists():
+            print(f"| {sym} | already downloaded |", flush=True)
+            continue
+        urls = [f"{ARCHIVE}/fundingRate/{pair}/{pair}-fundingRate-{t}.zip" for t in months] + \
+               [f"{ARCHIVE}/klines/{pair}/1d/{pair}-1d-{t}.zip" for t in months]
+        with ThreadPoolExecutor(max_workers=8) as pool:
+            got = list(pool.map(_get_zip_csv, urls))
         fund, perp = [], []
-        for m in _month_range(start, last_full):
-            tag = f"{m.year}-{m.month:02d}"
-            f = _get_zip_csv(f"{ARCHIVE}/fundingRate/{pair}/{pair}-fundingRate-{tag}.zip")
+        for f in got[: len(months)]:
             if f is not None:
                 f = f.iloc[:, [0, 2]] if f.shape[1] >= 3 else f.iloc[:, [0, 1]]
                 f.columns = ["time", "rate"]
                 fund.append(f)
-            k = _get_zip_csv(f"{ARCHIVE}/klines/{pair}/1d/{pair}-1d-{tag}.zip")
+        for k in got[len(months):]:
             if k is not None:
                 k = k.iloc[:, :6]
                 k.columns = ["timestamp", "open", "high", "low", "close", "volume"]
