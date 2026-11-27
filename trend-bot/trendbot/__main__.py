@@ -5,6 +5,7 @@
   holdout    test the frozen settings once on the holdout period
   run        one paper/live trading pass (schedule daily after 00:00 UTC)
   monitor    health check (schedule hourly)
+  carry-download / carry-research   funding carry research (no live trading yet)
 """
 from __future__ import annotations
 
@@ -47,14 +48,23 @@ def _broker(cfg, state):
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(prog="trendbot", description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("command", choices=["download", "research", "holdout", "run", "monitor"])
+    ap.add_argument("command", choices=["download", "research", "holdout", "run", "monitor",
+                                        "carry-download", "carry-research"])
     ap.add_argument("--config", default="config.yaml")
     ap.add_argument("--random-runs", type=int, default=100)
     a = ap.parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     cfg = config_mod.load(a.config)
 
-    if a.command == "download":
+    if a.command == "carry-download":
+        from .carry import download as carry_download
+        carry_download(cfg)
+    elif a.command == "carry-research":
+        from .carry import research as carry_research
+        text, ok = carry_research(cfg, n_random=a.random_runs)
+        print(text)
+        return 0 if ok else 2
+    elif a.command == "download":
         from .data import download
         download(cfg)
     elif a.command == "research":

@@ -68,7 +68,7 @@ def neighbours(p: Params) -> list[Params]:
     return out
 
 
-def walk_forward(returns_by_param: dict[Params, pd.Series], train_days=365, test_days=90):
+def walk_forward(returns_by_param: dict, train_days=365, test_days=90, label=None):
     """Pick the best param on each trailing year, then record its next quarter."""
     any_r = next(iter(returns_by_param.values()))
     idx = any_r.index
@@ -80,7 +80,7 @@ def walk_forward(returns_by_param: dict[Params, pd.Series], train_days=365, test
         te = (idx >= start) & (idx < start + pd.Timedelta(days=test_days))
         best = max(returns_by_param, key=lambda p: metrics(returns_by_param[p][tr])["sharpe"])
         chunk = returns_by_param[best][te]
-        windows.append({"test_start": str(start.date()), "sma": best.sma, "top_k": best.top_k,
+        windows.append({"test_start": str(start.date()), "settings": (label or _short)(best),
                         "return": float((1 + chunk).prod() - 1)})
         oos.append(chunk)
         start += pd.Timedelta(days=test_days)
@@ -206,8 +206,8 @@ def research(cfg: Config, n_random: int = 100, panel: dict | None = None) -> tup
         *[f"| {_short(q)} | {_fmt(m)} |" for q, m in grid_rows],
         "",
         "## Walk-forward windows",
-        "| Test start | Chosen SMA | top_k | Quarter return |", "|---|---|---|---|",
-        *[f"| {w['test_start']} | {w['sma']} | {w['top_k']} | {w['return']:+.1%} |" for w in windows],
+        "| Test start | Chosen settings | Quarter return |", "|---|---|---|",
+        *[f"| {w['test_start']} | {w['settings']} | {w['return']:+.1%} |" for w in windows],
         "",
         "Worst case is shown next to best on purpose. None of this is a guarantee.",
     ]

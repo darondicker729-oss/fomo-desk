@@ -48,3 +48,26 @@ risk-per-trade rule with 7-sigma stops capped each coin at about 4%. Its
 risk-adjusted result is about the same as just holding BTC, with a far smaller
 drawdown. That's a risk-controlled way to hold crypto, not an edge. Per the kill
 criterion: graveyard, no tuning.
+
+## 2026-11-27: new hypothesis 3, funding carry (delta-neutral)
+
+**Why:** Perpetual futures pay "funding" between longs and shorts every 8 hours.
+In crypto, leveraged longs usually outnumber shorts, so longs pay shorts. Holding
+spot and shorting the same coin's perp cancels out price moves and collects that
+payment. Who loses to it: leveraged speculators paying to hold their bets.
+
+**Rules fixed before running (config-carry.yaml):**
+- Per coin: enter when the 7-day average funding is above 10% a year, exit when it
+  falls below 0. Decide at the daily close, act from the next day.
+- Equal weight across active coins, max 25% of capital per coin.
+- Capital per $1 hedged: $1 spot + $0.50 perp margin, so returns are on $1.50.
+- Costs per side: spot 0.10% fee + 0.05% slippage; perp 0.05% fee + 0.05% slippage.
+- Margin risk: if a coin rallies 40% above its level at the last weekly top-up, the
+  short is assumed force-closed, with 1% extra slippage on top of normal costs.
+- Grid: entry threshold [5%, 10%, 20% a year] x lookback [3, 7, 14 days].
+- Same 9 checks and thresholds as before. Trials share the same all-time count.
+
+**Not modelled (real risks):** the exchange failing or freezing withdrawals (as FTX
+did in 2022), funding schedule changes, and borrowing or transfer delays.
+
+**Kill criterion:** if it fails the research checks, graveyard. No tuning.
